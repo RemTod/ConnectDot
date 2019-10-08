@@ -8,28 +8,32 @@
 
 import UIKit
 
+struct xYCoor {
+    var x = 0
+    var y = 0
+    var dotIndex = 0
+    var dotSize = 5
+
+    init(x : Int, y : Int, dotIndex : Int) {
+        self.x = x
+        self.y = y
+        self.dotIndex = dotIndex
+    }
+}
+
+var xy = [xYCoor]()
+
 class ViewController: UIViewController {
     
     var circle = [UIView]()
-     var rect = [UIView]()
-     var xy = [xYCoor]()
-     
-     struct xYCoor {
-         var x = 0
-         var y = 0
-         var dotIndex = 0
-         var dotSize = 5
-         
-         init(x : Int, y : Int, dotIndex : Int) {
-             self.x = x
-             self.y = y
-             self.dotIndex = dotIndex
-         }
-     }
+    var rect = [UIView]()
+    
+//    let demo = DemoView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         print(view.frame.maxX)
+        print(view.frame.maxY)
         print((view.frame.maxX-44-20*6)/5)
         print(view.frame.maxX-44-20*6)
         var count = 1
@@ -42,6 +46,9 @@ class ViewController: UIViewController {
                 count += 1
             }
         }
+//        DemoView().dotCoor = xy
+//        demo.dotCoor = xy
+        print("xy punya \(xy)")
         for data in xy{
             let frame = CGRect(x: data.x, y: data.y , width: 5, height: 5)
             if data.y == 55{
@@ -60,10 +67,17 @@ class ViewController: UIViewController {
             data.layer.cornerRadius = data.frame.size.width/2
             view.addSubview(data)
         }
-        for data in rect{
-            data.backgroundColor = .black
-            view.addSubview(data)
-        }
+//        for data in rect{
+//            data.backgroundColor = .black
+//            view.addSubview(data)
+//        }
+        let width: CGFloat = 414.0
+        let height: CGFloat = 896.0
+    
+        let demoView = DemoView(frame: CGRect(x: self.view.frame.size.width/2 - width/2, y: self.view.frame.size.height/2 - height/2, width: width, height: height))
+            
+        self.view.addSubview(demoView)
+
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
