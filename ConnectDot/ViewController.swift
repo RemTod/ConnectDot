@@ -28,10 +28,13 @@ class ViewController: UIViewController {
     var circle = [UIView]()
     var rect = [UIView]()
     
-//    let demo = DemoView()
+//    var demo = DemoView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        view.setNeedsDisplay()
+        
         print(view.frame.maxX)
         print(view.frame.maxY)
         print((view.frame.maxX-44-20*6)/5)
@@ -77,10 +80,12 @@ class ViewController: UIViewController {
         let demoView = DemoView(frame: CGRect(x: self.view.frame.size.width/2 - width/2, y: self.view.frame.size.height/2 - height/2, width: width, height: height))
             
         self.view.addSubview(demoView)
+//        demo.myViewDelegate = self as! MyViewDelegate
 
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+//        demo.reloadData()
     }
     
     //TODO: Buat search xy dengan toleransi
