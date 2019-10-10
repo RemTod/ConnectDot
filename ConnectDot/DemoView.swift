@@ -174,7 +174,7 @@ class DemoView: UIView {
             if (data.x + 10 >= x && data.x - 10 <= x) && (data.y + 10 >= y && data.y - 10 <= y){
                 let index = data.dotIndex-1
                 
-                tappedDots[indexTappedDot].append(tappedDots[indexTappedDot].first!)
+                tappedDots[indexTappedDot].append(index)
             }
         }
     }
@@ -240,11 +240,20 @@ class DemoView: UIView {
 
         let location = touch.location(in: self)
         
-        if(checkDotPosition(x: Int(location.x), y: Int(location.y))) && tappedDots[indexTappedDot].first == checkDotIndex(x: Int(location.x), y: Int(location.y)){
-            addLastDotIndex(x: Int(location.x), y: Int(location.y))
-            print("tambah yg terakhir")
-        }
-    
+        
+   
+//        do{
+//            try
+//                (checkDotPosition(x: Int(location.x), y: Int(location.y))) && tappedDots[indexTappedDot].first == checkDotIndex(x: Int(location.x), y: Int(location.y)){
+//                   addLastDotIndex(x: Int(location.x), y: Int(location.y))
+//                   print("tambah yg terakhir")
+//               
+//               
+//            }
+//        }catch let error{
+//            print("Error: \(error)")
+//        }
+
         print("list of dots", tappedDots)
         setNeedsDisplay()
 //        layoutIfNeeded()
