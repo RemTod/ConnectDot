@@ -44,23 +44,6 @@ class DemoView: UIView {
         return buffer
     }
     
-    override func draw(_ rect: CGRect) {
-//        createRectangle()
-        if !tappedDots.isEmpty && tappedDots[indexTappedDot].count>3 && tappedDots[indexTappedDot].first == tappedDots[indexTappedDot].last{
-//            tappedDots.forEach { dots in
-//                print("dotsDraw", dots)
-//                drawLine2(points: dots, strokeColor: .blue)
-//            }
-            drawLine2(points: tappedDots[indexTappedDot], strokeColor: .blue)
-            indexTappedDot += 1
-        }else if !tappedDots.isEmpty && tappedDots[indexTappedDot].count<=3 && tappedDots[indexTappedDot].first != tappedDots[indexTappedDot].last{
-            indexTappedDot += 1
-        }else if !tappedDots.isEmpty && tappedDots[indexTappedDot].count>3 && tappedDots[indexTappedDot].first != tappedDots[indexTappedDot].last{
-            indexTappedDot += 1
-        }
-//        if !tappedDots.isEmpty && tappedDots[indexTappedDot].count<=2
-    }
-    
     func calculateIndexPoint(index: Int) -> CGPoint{
         let size = xy[1].dotSize
         let halfsize: Double = Double(size/2)
@@ -71,59 +54,60 @@ class DemoView: UIView {
         return CGPoint(x: xPoint, y: yPoint)
     }
     
-    func drawLine(points: [Int], strokeColor: UIColor, fillColor: UIColor){
-        let path = UIBezierPath()
-            
-        path.move(to: calculateIndexPoint(index: points.first!))
-    
-        points.dropFirst().forEach { point in
-            path.addLine(to: calculateIndexPoint(index: point))
-        }
-
-        path.close()
-        
-        
-        fillColor.setFill()
-        strokeColor.setStroke()
-        
-        path.fill()
-        path.stroke()
-    }
-    
     func drawLine2(points: Array<Int>, strokeColor: UIColor){
-        guard let context = UIGraphicsGetCurrentContext() else {return}
+            guard let context = UIGraphicsGetCurrentContext() else {return}
             
-        context.move(to: calculateIndexPoint(index: points.first!))
-    
-        points.dropFirst().forEach { point in
-            context.addLine(to: calculateIndexPoint(index: point))
+        if points.count < 4 {
+            return
         }
         
-        context.setStrokeColor(strokeColor.cgColor)
-        context.strokePath()
+        if points.first != points.last {
+            return
+        }
         
-        context.closePath()
+            context.move(to: calculateIndexPoint(index: points.first!))
         
-//        tappedDots = [Set<Int>]()
+            points.dropFirst().forEach { point in
+                context.addLine(to: calculateIndexPoint(index: point))
+            }
+            
+            context.setStrokeColor(strokeColor.cgColor)
+            context.strokePath()
+            
+            context.closePath()
+            
+    //        tappedDots = [Set<Int>]()
+        
+    //        context.setFillColor(UIColor.black.cgColor)
+    //        context.fillPath()
+
+    //        path.close()
+
+
+    //        fillColor.setFill()
+    //        strokeColor.setStroke()
+
+    //        path.fill()
+    //        path.stroke()
+        }
     
-//        context.setFillColor(UIColor.black.cgColor)
-//        context.fillPath()
-
-//        path.close()
-
-
-//        fillColor.setFill()
-//        strokeColor.setStroke()
-
-//        path.fill()
-//        path.stroke()
+    override func draw(_ rect: CGRect) {
+//        createRectangle()
+        if !tappedDots.isEmpty {
+//            drawLine2(points: tappedDots[indexTappedDot], strokeColor: .blue)
+            drawLine2(points: tappedDots.last!, strokeColor: .blue)
+//            tappedDots.forEach { dots in
+//                print("dotsDraw", dots)
+//                drawLine2(points: dots, strokeColor: .blue)
+//            }
+            print("")
+        }
+//        if !tappedDots.isEmpty && tappedDots[indexTappedDot].count<=2
     }
     
-    func createRectangle() {
-        drawLine(points: [0,6,7,1], strokeColor: .purple, fillColor: .orange)
-    }
+
     
-    func addDotIndex(x : Int, y : Int, touchBegin: Bool = false){
+    func addDotIndex(x : Int, y : Int, touchBegin: Bool = false, touchEnded: Bool = false){
         for data in xy{
             if (data.x + 10 >= x && data.x - 10 <= x) && (data.y + 10 >= y && data.y - 10 <= y){
                 let index = data.dotIndex-1
@@ -153,8 +137,14 @@ class DemoView: UIView {
 //                    print("tap yg terakhir\(tappedDots[tappedDots.count-1].last!) index\(index)")
 //                } else if tappedDots[tappedDots.count-1].last! == index{
                 lastTappedDots.append(index)
-                tappedDots.append(lastTappedDots)
-                tappedDots[indexTappedDot] = uniq(source: tappedDots[indexTappedDot])
+                var uniqDot = uniq(source: lastTappedDots)
+//                uniqDot.append(uniqDot.first!)
+                
+                if touchEnded {
+                    uniqDot.append(index)
+                }
+                
+                tappedDots.append(uniqDot)
 //                if tappedDots[indexTappedDot].last != tappedDots[indexTappedDot].first{
 //                    tappedDots[indexTappedDot].append(tappedDots[indexTappedDot].first!)
 //                }
@@ -196,7 +186,8 @@ class DemoView: UIView {
                 return true
             }
         }
-        return true
+        return false
+        print("ga dapet")
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -240,15 +231,18 @@ class DemoView: UIView {
 
         let location = touch.location(in: self)
         
-        
+        if(checkDotPosition(x: Int(location.x), y: Int(location.y))){
+            addDotIndex(x: Int(location.x), y: Int(location.y), touchEnded: true)
+            print("touch ended")
+        }
    
 //        do{
 //            try
-//                (checkDotPosition(x: Int(location.x), y: Int(location.y))) && tappedDots[indexTappedDot].first == checkDotIndex(x: Int(location.x), y: Int(location.y)){
+//        if (checkDotPosition(x: Int(location.x), y: Int(location.y))) == true && tappedDots[indexTappedDot].first == checkDotIndex(x: Int(location.x), y: Int(location.y)){
 //                   addLastDotIndex(x: Int(location.x), y: Int(location.y))
 //                   print("tambah yg terakhir")
-//               
-//               
+////
+////
 //            }
 //        }catch let error{
 //            print("Error: \(error)")
@@ -261,3 +255,4 @@ class DemoView: UIView {
     
     
 }
+
